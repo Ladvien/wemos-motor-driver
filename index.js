@@ -35,50 +35,49 @@ var init = function(address, motor, freq, standByIOPin) {
 
 var setFreq = function(pwmFreq) {
 
-    const firstByte     = (pwmFreq >> 24) &~ 0xFFFF00;
-    const secondByte    = (pwmFreq >> 16) &~ 0xFFFF00;
-    const thirdByte     = (pwmFreq >> 8) &~ 0xFFFF00;
-    const fourthByte    = pwmFreq &~ 0xFF00;
+    const firstByte     = (pwmFreq >> 24) &~ 0xFFFFFF00;
+    const secondByte    = (pwmFreq >> 16) &~ 0xFFFFFF00;
+    const thirdByte     = (pwmFreq >> 8) &~ 0xFFFFFF00;
+    const fourthByte    = pwmFreq &~ 0xFFFFFF00;
 
     console.log(`
-    firstByte: ${firstByte}
-    secondByte: ${secondByte}
-    thirdByte: ${thirdByte}
-    fourthByte: ${fourthByte}
+    address: ${_address.toString(16)}
+    firstByte: ${firstByte.toString(16)}
+    secondByte: ${secondByte.toString(16)}
+    thirdByte: ${thirdByte.toString(16)}
+    fourthByte: ${fourthByte.toString(16)}
         `)
 
     var buf = Buffer.from([firstByte, secondByte, thirdByte, fourthByte]);
-    i2c1.i2cWrite(_address, buf.length, buf, (err, bytesWritten, buffer) => {
-        console.log(bytesWritten);
-    });
+    var bytesWritten = i2c1.i2cWriteSync(_address, buf.length, buf);
+    console.log(`Wrote ${bytesWritten} bytes setting PWM frequency.`)
     sleep.msleep(100);
 }
 
 var setMotor = function(motor, direction, pwmValue) {
 
-    const motorSelection = (motor | 0x10) &~ 0xFFFF00;;
+    const motorSelection = (motor | 0x10) &~ 0xFFFFFF00;;
     const directionSelection = (direction);
     var pwmValueCalculation = pwmValue * 100
     if (pwmValueCalculation > 10000) {
         pwmValueCalculation = 10000;
     }
-    const pwmValueSelectionOne = (pwmValueCalculation >> 8) &~ 0xFFFF00;;
-    const pwmValueSelectionTwo = pwmValueCalculation &~ 0xFFFF00;
+    const pwmValueSelectionOne = (pwmValueCalculation >> 8) &~ 0xFFFFFF00;;
+    const pwmValueSelectionTwo = pwmValueCalculation &~ 0xFFFFFF00;
 
     console.log(`
-    motorSelection: ${motorSelection}
-    pwmValueSelectionOne: ${pwmValueSelectionOne}
-    pwmValueSelectionTwo: ${pwmValueSelectionTwo}
-    direction: ${direction}
+    address: ${_address.toString(16)}
+    motorSelection: ${motorSelection.toString(16)}
+    direction: ${direction.toString(16)}
+    pwmValueSelectionOne: ${pwmValueSelectionOne.toString(16)}
+    pwmValueSelectionTwo: ${pwmValueSelectionTwo.toString(16)}
         `)
 
 
-    var buf = Buffer.from([motorSelection, direction, pwmValueSelectionTwo, pwmValueSelectionOne]);
-    i2c1.i2cWrite(_address, buf.length, buf, (err, bytesWritten, buffer) => {
-        console.log(`While setting motor ${bytesWritten} were written.`)
-    });
+    var buf = Buffer.from([motorSelection, direction, pwmValueSelectionOne, pwmValueSelectionTwo]);
+    i2c1.i2cWriteSync(_address, buf.length, buf);
     sleep.msleep(100);
 }
 
-init(0x2d, _MOTOR_A, 1000, 0);
-setMotor(_MOTOR_A, _CCW, 100.0);
+init(0x2D, _MOTOR_A, 1000, 0);
+setMotor(_MOTOR_A, _CW, 100.0);
