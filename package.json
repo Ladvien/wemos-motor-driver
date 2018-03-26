@@ -1,0 +1,28 @@
+{
+  "name": "wemos-motor-driver",
+  "version": "1.0.0",
+  "description": "I2C driver for the Wemos Motor Board",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ladvien/wemos-motor-driver.git"
+  },
+  "keywords": [
+    "i2c",
+    "raspberry",
+    "pi",
+    "node",
+    "javascript",
+    "motor",
+    "driver"
+  ],
+  "author": "C. Thomas Brittain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ladvien/wemos-motor-driver/issues"
+  },
+  "homepage": "https://github.com/Ladvien/wemos-motor-driver#readme"
+}
